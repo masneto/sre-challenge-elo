@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-challenge-db
+  labels:
+    app: sre-challenge-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-challenge-db
+  template:
+    metadata:
+      labels:
+        app: sre-challenge-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql/mysql-server:8.0.23
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sre-challenge-db-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: sre-challenge-db-secret
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: sre-challenge-db-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sre-challenge-db-secret
+              key: MYSQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sre-challenge-db
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: sre-challenge-db
+  type: ClusterIP
