@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: sre-challenge-app
-          image: nettoremix/sre-challenge
+          image: demo/sre-challenge
           ports:
             - containerPort: 8080
           env:
