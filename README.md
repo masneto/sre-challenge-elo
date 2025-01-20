@@ -36,8 +36,8 @@ Requisitos
 2. Foram criado os seguintes Manifestos:
   ```
   k8s-manifests/sre-challenger-mysql-secret.yaml: Guarda as credenciais do MySQL de forma segura.
-  k8s-manifests/sre-challenger-mysql.yaml: Configura o banco de dados MySQL, incluindo armazenamento persistente.
-  k8s-manifests/sre-challenger-app.yaml: Implanta a aplicação principal e define como ela se conecta ao MySQL.
+  k8s-manifests/sre-challenger-mysql.yaml: Configura o banco de dados MySQL, incluindo armazenamento persistente em caso do pod ser recriado.
+  k8s-manifests/sre-challenger-app.yaml: Implanta a aplicação sre-challenge-app e define como ela se conecta ao MySQL.
   k8s-manifests/sre-challenger-hpa.yaml: Ajusta automaticamente o número de réplicas da aplicação com base na carga de CPU.
   ```
 

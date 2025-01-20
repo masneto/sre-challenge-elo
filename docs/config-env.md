@@ -125,6 +125,6 @@
 
 ![Cadastro de Funcionários via Insomnia](img/Imagem5.png)
 
-8. Para acessar os dados dos Funcionários já cadastrados e que estão no volume do banco de dados, deverá ser pelo endpoint http://localhost:30001/employee
+8. Para acessar os dados dos Funcionários já cadastrados e que estão no volume criado no banco de dados, deverá ser pelo endpoint http://localhost:30001/employee
 
 ![Lista de Funcionários cadastrados no Endpoint](img/Imagem6.png)
