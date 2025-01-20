@@ -15,42 +15,42 @@ spec:
         app: sre-challenge-app
     spec:
       containers:
-      - name: sre-challenge-app
-        image: nettoremix/sre-challenge:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DATABASE_HOST
-          value: sre-challenge-db
-        - name: DATABASE_PORT
-          value: "3306"
-        - name: DATABASE_NAME
-          valueFrom:
-            secretKeyRef:
-              name: sre-challenge-db-secret
-              key: MYSQL_DATABASE
-        - name: DATABASE_USER
-          valueFrom:
-            secretKeyRef:
-              name: sre-challenge-db-secret
-              key: MYSQL_USER
-        - name: DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: sre-challenge-db-secret
-              key: MYSQL_PASSWORD
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
+        - name: sre-challenge-app
+          image: nettoremix/sre-challenge
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_HOST
+              value: sre-challenge-db
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sre-challenge-db-secret
+                  key: MYSQL_DATABASE
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sre-challenge-db-secret
+                  key: MYSQL_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sre-challenge-db-secret
+                  key: MYSQL_PASSWORD
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sre-challenge-app
+  name: sre-challenge-app-service
 spec:
   selector:
     app: sre-challenge-app
@@ -58,4 +58,5 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 8080
+    nodePort: 30001 # Porta para acessar externamente
   type: NodePort

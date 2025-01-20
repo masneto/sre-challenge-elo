@@ -3,7 +3,6 @@ FROM ghcr.io/graalvm/graalvm-ce:22.2.0 AS builder
 COPY  . /root/app/
 WORKDIR /root/app
 RUN sed -i 's/\r$//' mvnw
-RUN chmod +x mvnw
 RUN ./mvnw clean install -DskipTests
 
 # Application
