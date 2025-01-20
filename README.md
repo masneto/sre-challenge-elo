@@ -26,30 +26,45 @@ Nesse repositório, fornecemos a você:
 
 ### Configure o ambiente do desafio
 
-1. Instale qualquer cluster K8s local (ex: Minikube) em sua máquina e documente sua configuração, para que possamos executar sua solução.
+1. Para mais detalhes sobre a configuração do ambiente, consulte o [guia de configuração](docs/config-env.md).
 
 ### Parte 1 - Configure os aplicativos
 
-Gostariamos que essa aplicação sre-challenge-app e seu banco de dados fossem executados em um cluster K8s.
-
 Requisitos
 
-1. A aplicação deve ser acessível de fora do cluster.
-2. Manifestos de implantação do kubernetes para executar com limitação de requests e usando HPA.
+1. A aplicação está sendo acessada pelo endereço http://localhost:30001. Conforme descrito na documentação.
+2. Foram criado os seguintes Manifestos:
+  ```
+  k8s-manifests/sre-challenger-mysql-secret.yaml: Guarda as credenciais do MySQL de forma segura.
+  k8s-manifests/sre-challenger-mysql.yaml: Configura o banco de dados MySQL, incluindo armazenamento persistente.
+  k8s-manifests/sre-challenger-app.yaml: Implanta a aplicação principal e define como ela se conecta ao MySQL.
+  k8s-manifests/sre-challenger-hpa.yaml: Ajusta automaticamente o número de réplicas da aplicação com base na carga de CPU.
+  ```
 
 ### Parte 2 - Corrigir o problema
 
-A aplicação tem um problema. Encontre e corrija! Você saberá que corrigiu o problema quando o estado dos pods no namespaces for semelhante a este:
+Pods rodando com sucesso.
 
 ```
-NAME                                 READY   STATUS    RESTARTS   AGE
-db-5877fd4d4d-qmngl                  1/1     Running   0          6m50s
-sre-challenge-app-59fd5ffc57-lm2xs   1/1     Running   0          7s
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/sre-challenge-app-fd997f554-84zl4   1/1     Running   0          5s
+pod/sre-challenge-db-5545dc5454-zpkmb   1/1     Running   0          6s
 ```
 
-Requisitos
+Problemas encontrados:
 
 Escreva aqui sobre o problema, a solução, como você a encontrou e qualquer outra coisa que queira compartilhar sobre ela.
+
+R: Tive os seguintes erros para execução do processo e no Pod após a aplicação dos manifestos.
+- Erro na criação da Imagem.
+Tive que acrescentar um comando `sed -i 's/\r$//' mvnw`, para que  a imagem pudesse ser criada. O erro pode ter sido devido a execução ser feita toda pelo Windows, pois tive problemas para emular um SO Linux.
+
+![Erro 1](docs/img/ImagemError1.png)
+
+- Erro no pod demo/sre-challenge
+Após executar os manifestos eu tive problemas para que o POD criado executasse corretamente, o erro de ImagePullBackOff foi resolvido subindo a aplicação no docker hub com nome do meu usuário nettoremix/sre-challenge.
+
+![Erro 2](docs/img/ImagemError2.png)
 
 ### Parte 3 - Melhores práticas
 
@@ -58,17 +73,30 @@ Essa aplicação tem uma falha de segurança e gostariamos que as credenciais do
 Requisitos
 1. Manifesto do kubernetes usando a API de secret com as credenciais do Banco para implantação.
 2. Manifesto do kunernetes da aplicação com as informações da secret criada anteriormente.
-2. Configuração do código da aplicação utilizando uma variável que foi referenciada no secrets do K8s (Application Properties do Java)
+3. Configuração do código da aplicação utilizando uma variável que foi referenciada no secrets do K8s (Application Properties do Java)
+
+Os manifestos foram criados e se encontram na pasta k8s-manifests. Realizei os ajustes no properties para que pegasse as variáveis obtidas pelos manifestos.
+![Diretório com os Manifestos e Ajustes no Properties](docs/img/Readme1.png)
 
 ### Parte 4 - Perguntas
 
 Sinta-se à vontade para expressar seus pensamentos e compartilhar suas experiências com exemplos do mundo real com os quais você trabalhou no passado.
 
 Requisitos
-O que você faria para melhorar essa configuração e torná-la “pronta para produção”?
-Existem 2 microsserviços mantidos por 2 equipes diferentes. Cada equipe deve ter acesso apenas ao seu serviço dentro do cluster. Como você abordaria isso?
-Como você evitaria que outros serviços em execução no cluster se comunicassem com o sre-challenge-app?
+O que você faria para melhorar essa configuração e torná-la “pronta para produção”?<br>
+R: Sugeriria a implementação dos itens abaixo:
 
+- Secrets: Usar ferramenta que gerencie as Secrets de uma forma melhor. 
+- TLS/SSL: Implementar TLS/SSL para comunicação segura.
+- RBAC: Configurar RBAC para restringir acesso aos recursos.
+- Observabilidade e Monitoramento: Utilizar ferramentas do mercado como Kibana, Elastic Search, Grafana, Datadog para monitorar os pods.
+- Pipelines: Configurar pipelines de CI/CD como o próprio GitHub Actions. Criando workflows como por exemplo para segregação de ambientes Dev, Hom, Prod.
+
+Existem 2 microsserviços mantidos por 2 equipes diferentes. Cada equipe deve ter acesso apenas ao seu serviço dentro do cluster. Como você abordaria isso?<br>
+R: Poderia ser criado namespaces para a separação por time/microsserviço, criação de policies (Network Policies) e a utilização do RBAC para restringir o acesso de cada time ao seu respectivo microservisso.
+
+Como você evitaria que outros serviços em execução no cluster se comunicassem com o sre-challenge-app?<br>
+R: Com a Policy criada, poderia ser ajustado para que permita somente entrada e saida, garantindo que os pods se comuniquem com o sre-challenge-app.
 
 ## O que é importante para nós?
 
