@@ -90,7 +90,7 @@ R: Sugeriria a implementação dos itens abaixo:
 - TLS/SSL: Implementar TLS/SSL para comunicação segura.
 - RBAC: Configurar RBAC para restringir acesso aos recursos.
 - Observabilidade e Monitoramento: Utilizar ferramentas do mercado como Kibana, Elastic Search, Grafana, Datadog para monitorar os pods.
-- Pipelines: Configurar pipelines de CI/CD como o próprio GitHub Actions. Criando workflows como por exemplo para segregação de ambientes Dev, Hom, Prod.
+- Pipelines: Configurar pipelines de CI/CD como o próprio GitHub Actions. Criando workflows como por exemplo para segregação de ambientes Dev, Hom, Prod. Versionando cada subida para que não haja conflito entre branchs dos times.
 
 Existem 2 microsserviços mantidos por 2 equipes diferentes. Cada equipe deve ter acesso apenas ao seu serviço dentro do cluster. Como você abordaria isso?<br>
 R: Poderia ser criado namespaces para a separação por time/microsserviço, criação de policies (Network Policies) e a utilização do RBAC para restringir o acesso de cada time ao seu respectivo microservisso.
